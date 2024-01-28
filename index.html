@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Portfolio</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <nav class="logo">
+        <p>
+          <a href="index.html">Gautam</a>
+          <a href="index.html">Shrestha</a>
+        </p>
+      </nav>
+
+      <nav>
+        <ul class="navigation">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="Html/Projects.html">Projects</a></li>
+          <li><a href="Html/Skills.html">Skills</a></li>
+          <li><a href="Html/Experience.html">Experience</a></li>
+          <li><a href="Html/About.html">About</a></li>
+        </ul>
+      </nav>
+
+      <nav>
+        <ul class="navigation">
+          <li><a href="Html/Linkedin.html"> <img src="Img/linkedin.png"></a> </li>  
+          <li><a href="https://www.facebook.com/gautamxhre/"> <img src="Img/fb.png"></a> </li>
+          <li><a href="https://www.instagram.com/gautam.xhr/"> <img src="Img/insta.png"></a> </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="div2">
+      <div class="col1">
+        <img src="img/me.jpg">
+      </div>
+      <div class="col2">
+        <p>I'm</p>
+        <p>Gautam Shrestha. BSc (Hons) Computer Networking & IT Security</p>
+      </div>
+    </div>
+
+    <section id="projects">
+      <div class="container">
+        <h2>My latest projects</h2>
+        <div class="services">
+          <div class="service">
+            <h3>AutoPilot Parking</h3>
+            <p>AutoPilot Parking is an IoT project I worked on. It's a smart car and parking system that helps use parking space better and makes parking easier.</p>
+            <p><a href="Html/Projects/iot.html">Learn more</a></p>
+          </div>
+          <div class="service">
+            <h3>Tic Tac Toe</h3>
+            <p>Tic Tac Toe is a classic game implemented using HTML, CSS, and JavaScript. Play against the computer or challenge a friend to a match!</p>
+            <p><a href="Html/Projects/ttt.html">Learn more</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="contact">
+        <h2>Contact Me</h2>
+        <div class="contactdiv">
+          <img src="img/contact.jpg" width="450" height="550">
+          <form  class="form" method="post" action="" name="contact-form">
+            <p>Name :</p>
+            <input type="text" name="firstname" class="field" placeholder="Your First Name">
+            <input type="text" name="lastname" class="field" placeholder="Your Last Name">
+            <p>Email :</p>
+            <input type="email" name="email" class="field" placeholder="Your Email Address">
+            <p>Phone :</p>
+            <input type="tel" class="field" name="number" placeholder="Your Phone Number" pattern="[0-9]+" title="Invalid number!" maxlength="10">
+            <p>Message :</p>
+            <textarea placeholder="Your Message" name="message" class="field"></textarea>
+            <br>
+            <br>
+            <input class="btn" type="submit" value="Submit" id="submit">
+            
+          </form> 
+        </div>
+      </div>
+    </section>
+
+
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2023 GAUTAM SHRESTHA. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+
+<script src="Js/script.js"></script>
+
+</body>
+</html>
