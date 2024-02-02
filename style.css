@@ -309,6 +309,7 @@ table {
   font-weight: bold;
   background-color: #eee;
   transition: all 0.2s ease-in-out;
+  user-select: none; /* Prevent text selection */
 }
 
 .square:hover {
