@@ -890,13 +890,17 @@ table {
     flex-direction: column;
     align-items: center;
     margin: 0 20px;
-  }
+  } 
 
   .experience-description,
   .experience-image {
     margin: 20px 0px;
   }
 
+.experience-description p {
+    margin: 0px;
+  }
+    
   .experience-image img {
   width: 250px; 
   height: 320px;
