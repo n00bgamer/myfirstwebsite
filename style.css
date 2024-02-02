@@ -303,19 +303,20 @@ table {
   width: 130px;
   height: 130px;
   border: 2px solid #333;
-  text-align: center;
-  vertical-align: middle;
+  text-align: center; /* Center text */
   font-size: 60px;
   font-weight: bold;
   background-color: #eee;
   transition: all 0.2s ease-in-out;
   user-select: none; /* Prevent text selection */
+  cursor: default; /* Set cursor to default */
 }
 
 .square:hover {
   background-color: #ddd;
-  cursor: pointer;
+  cursor: pointer; /* Change cursor on hover */
 }
+
 
 #opponent-choice {
   text-align: center; 
