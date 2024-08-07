@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore the AutoPilot Parking project, an innovative IoT-based self-driving car designed using Arduino UNO and various sensors for autonomous parking. Learn how to build an Arduino line follower robot car and other IoT projects.">
+    <meta name="keywords" content="How to make Arduino Line Follower Robot Car with Arduino UNO, IoT project, line following car, Line Follower Robot Arduino, auto driving car">
+    <meta name="author" content="Gautam Shrestha">
+    <title>AutoPilot Parking - IoT Project</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div>
+            <a href="https://www.gautam-shrestha.com.np/" class="nav_logo">Gautam</a>
+            <a href="#" class="icon"><img src="../assets/img/icons/np_flag.gif" alt="Nepal"></a>
+        </div>
+
+        <div>
+            <ul class="nav_pages">
+                <li><a href="../index">Home</a></li>
+                <li><a href="../experience">Experience</a></li>
+                <li><a href="../skill">Skill</a></li>
+                <li class="active"><a href="../project">Project</a></li>
+                <li><a href="../blog">Blog</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <ul class="social_links">
+                <li><a href="linkedin.html"><img src="../assets/img/icons/linkedin.png" alt="LinkedIn"></a></li>
+                <li><a href="https://www.facebook.com/gautamxhre/" target="_blank"><img src="../assets/img/icons/fb.png" alt="Facebook"></a></li>
+                <li><a href="https://www.instagram.com/gautam.xhr/" target="_blank"><img src="../assets/img/icons/insta.png" alt="Instagram"></a></li>
+            </ul>
+        </div>
+
+        <div class="nav_dropdown" id="nav-dropdown">
+            <ul class="nav_dropdown_list">
+                <li><a href="../index" class="icon"><img src="../assets/img/icons/home.png" alt="Home Icon">Home</a></li>
+                <li><a href="../experience" class="icon"><img src="../assets/img/icons/experience.png" alt="Experience Icon">Experience</a></li>
+                <li><a href="../skill" class="icon"><img src="../assets/img/icons/skills.png" alt="Skills Icon">Skills</a></li>
+                <li class="active"><a href="project" class="icon"><img src="../assets/img/icons/project.png" alt="Projects Icon">Projects</a></li>
+                <li><a href="../blog" class="icon"><img src="../assets/img/icons/blog.png" alt="Blog Icon">Blog</a></li>
+            </ul>
+            <div class="nav_close icon" id="nav-close"><img src="../assets/img/icons/cross.png" alt="Close Menu"></div>
+        </div>
+
+        <div class="nav_toggle icon" id="nav-toggle"><img src="../assets/img/icons/menu.png" alt="Open Menu"></div>
+    </nav>
+
+    <main>
+        <h1>AutoPilot Parking</h1>
+        <section id="iot">
+            <div class="iot_container">
+<div class="iot_image" onclick="openClickFunction(0)">
+    <div class="slider">
+        <img src="../assets/img/projects/car2.jpg" alt="Arduino-based self-driving car with parking capabilities">
+        <img src="../assets/img/projects/tic.png" alt="Another image">
+    </div>
+</div>
+
+
+
+                <div class="iot_description">
+                    <p>
+                        In our IoT module, our teacher grouped us randomly for an assignment. There were five of us in the group. Together, we came up with a big idea: making a car that drives itself and can find parking spots on its own. We used components like Arduino UNO, IR sensors, a L293D Motor Driver, and motors with wheels to build it. The IR sensors acted like the car's eyes, helping it avoid obstacles, while the smart parking system allowed it to park itself autonomously.<br>
+                        <br>Putting everything together was challenging. We had to integrate hardware with software effectively. Each team member contributed their expertise, whether it was coding or circuit building. Despite the difficulties, from debugging code to troubleshooting hardware issues, we persevered.<br>
+                        <br>When we finally presented our project, we were proud of the results. Our self-driving car performed excellently and demonstrated effective autonomous parking. More importantly, we gained valuable experience in teamwork and problem-solving.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Clickable image -->
+    <div id="myClickFunction" class="click_function">
+        <span class="close" onclick="closeClickFunction()">&times;</span>
+        <div class="click_function_content">
+            <button class="img_change_btn left" onclick="prevImage()">&lt;</button>
+            <img id="clickFunctionImg">
+            <button class="img_change_btn right" onclick="nextImage()">&gt;</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Gautam Shrestha. All rights reserved.</p>
+        </div>
+    </footer>
+	
+<script src="../assets/js/main.js" defer></script>
+<script src="project.js" defer></script>
+
+
+</body>
+</html>
