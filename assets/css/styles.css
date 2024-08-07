@@ -167,7 +167,7 @@ nav {
 
 @media (max-width: 450px) {
     .social_links {
-        gap: 1rem;
+        gap: 0.5rem;
     }
 }
 /*==================== NAV ====================*/
