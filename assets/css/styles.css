@@ -1005,13 +1005,21 @@ textarea::placeholder {
 
 @media (pointer: coarse) {
     .social_links li:hover,
-    .project_card:hover {
+    .project_card:hover,
+    .skill_card:hover,
+    .project:hover img,
+    .blog_post:hover {
         transform: none;
     }
 
     .nav_logo:hover,
     .nav_pages a:hover {
 	color: initial;
+    }
+
+    .blog_post h3:hover,
+    .blog_post p a:hover {
+        text-decoration: none;
     }
 
 }
