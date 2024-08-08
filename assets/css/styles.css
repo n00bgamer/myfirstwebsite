@@ -38,6 +38,7 @@ ul {
 a {
     text-decoration: none;
 }
+
 /*==================== ALL ====================*/
 
 
@@ -358,6 +359,7 @@ nav {
 
 .project_card_back {
   transform: rotateY(180deg);
+  display: block;
   background-color: white;
 }
 
@@ -365,6 +367,7 @@ nav {
   margin: 1rem;
   line-height: 1.5;
   text-align: center;
+  justify-content: center;
 }
 
 /* Media query for responsiveness */
@@ -768,6 +771,9 @@ textarea::placeholder {
 }
 
 @media (max-width: 480px) {
+    .qualification_container {
+        padding: 0;
+    }
     .qualification_buttons h1{
         font-size: 1.2rem;
     }
@@ -848,14 +854,13 @@ textarea::placeholder {
 
     /***************** project *****************/
 
-
-    .project_container {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 5rem;
-      margin: 3rem 0 0 0;
-    }
+.project_container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5rem;
+  margin: 3rem 0 0 0;
+}
 
 .project {
   margin: 0;
@@ -882,6 +887,22 @@ textarea::placeholder {
   font-size: 1.5rem;
   font-weight: 500;
 }
+
+@media (max-width: 768px) {
+  .project_container {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .project {
+    width: 100%;
+    max-width: 18.75rem;
+    height: auto;
+  }
+}
+
 
     /***************** project *****************/
 
@@ -983,8 +1004,14 @@ textarea::placeholder {
 
 
 @media (pointer: coarse) {
-    .social_links li:hover {
+    .social_links li:hover,
+    .project_card:hover {
         transform: none;
+    }
+
+    .nav_logo:hover,
+    .nav_pages a:hover {
+	color: initial;
     }
 
 }
