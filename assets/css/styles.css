@@ -78,10 +78,13 @@ nav {
 .nav_pages a:hover,
 .nav_pages .active a,
 .nav_dropdown .active a {
-    #color: #ff66b2;
     color: #cc0000;
 }
 
+.nav_pages .active a {
+    border-bottom: 2px solid #cc0000;
+    padding-bottom: 2px;
+}
 
 .icon img {
     width: 24px;
@@ -170,7 +173,7 @@ nav {
 
 @media (max-width: 450px) {
     .social_links {
-        gap: 1.5rem;
+        gap: 1rem;
     }
 
     .nav_toggle,
@@ -209,15 +212,31 @@ nav {
     }
 
     .bottom_nav_list a {
+        position: relative;
         text-decoration: none;
         color: black;
-        text-align: center;
-        font-size: 0.75rem;
-        font-weight: 500;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    	text-align: center;
+    	font-size: 0.75rem;
+    	font-weight: 500;
+    	display: flex;
+    	flex-direction: column;
+    	align-items: center;
     }
+
+    .bottom_nav .active a::before {
+    	content: '';
+    	position: absolute;
+    	top: -10px;
+    	left: 0;
+    	width: 100%;
+    	height: 3px;
+    	background-color: #cc0000;
+    }
+
+    nav, .bottom_nav {
+        transition: top 0.1s ease, bottom 0.1s ease;
+    }
+
 }
 
 /*==================== NAV ====================*/
