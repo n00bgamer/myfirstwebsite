@@ -768,8 +768,8 @@ textarea::placeholder {
 }
 
 .qualification_calendar img {
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
 }
 
 .qualification_rounder {
@@ -856,6 +856,11 @@ textarea::placeholder {
 
     .qualification_calendar {
         font-size: 0.6rem;
+    }
+
+    .qualification_calendar img {
+    	width: 10px;
+    	height: 10px;
     }
 }
 
