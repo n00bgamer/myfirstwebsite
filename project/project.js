@@ -163,7 +163,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const images = [
         '../assets/img/projects/iot/car-c.jpg',
         '../assets/img/projects/iot/car1-c.jpg',
-        '../assets/img/projects/iot/car2-c.jpg'
+        '../assets/img/projects/iot/car2-c.jpg',
+        '../assets/img/me/me_car.jpg'
     ];
 
     let currentIndex = 0;
