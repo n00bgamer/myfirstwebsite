@@ -161,8 +161,9 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     // Array to keep track of the images in the slider
     const images = [
-        '../assets/img/projects/car2.jpg',
-        '../assets/img/projects/tic.png'
+        '../assets/img/projects/iot/car-c.jpg',
+        '../assets/img/projects/iot/car1-c.jpg',
+        '../assets/img/projects/iot/car2-c.jpg'
     ];
 
     let currentIndex = 0;
