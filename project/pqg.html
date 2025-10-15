@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Generate instant Q&A from your PDF and test your understanding with an automatic scoring system.">
+    <meta name="keywords" content="PDF Question Generator">
+    <meta name="author" content="Gautam Shrestha">
+    <title>PDF Question Generator</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --primary: #4a90e2;
+      --background: #f9f9f9;
+      --text: #333;
+      --card-bg: #fff;
+      --border-radius: 12px;
+      --transition: 0.3s ease;
+      --green: #28a745;
+      --yellow: #ffc107;
+      --red: #dc3545;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--background);
+      padding: 2rem;
+      color: var(--text);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--primary);
+    }
+
+    #quiz-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .image-guide {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto 1.5rem auto;
+      display: block;
+      border-radius: 8px;
+    }
+
+    input[type="file"] {
+      display: block;
+      margin: 0 auto 1.5rem auto;
+      padding: 1rem;
+      border: 2px dashed #ccc;
+      width: 100%;
+      background: #fafafa;
+      cursor: pointer;
+      border-radius: var(--border-radius);
+      transition: border var(--transition);
+    }
+
+    input[type="file"]:hover {
+      border-color: var(--primary);
+    }
+
+    .question-block {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      background: #f0f4ff;
+      transition: background var(--transition);
+      position: relative;
+    }
+
+    .question {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #ccc;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: border var(--transition), background var(--transition);
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary);
+      outline: none;
+      background: #fff;
+    }
+
+    /* Feedback colors */
+    input.correct {
+      border-color: var(--green);
+      background: #e6f4ea;
+    }
+
+    input.partial {
+      border-color: var(--yellow);
+      background: #fff9e6;
+    }
+
+    input.incorrect {
+      border-color: var(--red);
+      background: #fdecea;
+    }
+
+    .feedback {
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+
+    .feedback.correct {
+      color: var(--green);
+    }
+
+    .feedback.partial {
+      color: var(--yellow);
+    }
+
+    .feedback.incorrect {
+      color: var(--red);
+    }
+
+    .correct-answer {
+      margin-top: 0.3rem;
+      font-size: 0.9rem;
+      color: #555;
+      font-style: italic;
+      background: #f9f9f9;
+      padding: 0.5rem 1rem;
+      border-left: 4px solid var(--red);
+      border-radius: var(--border-radius);
+      white-space: pre-wrap;
+    }
+
+    #submit-btn {
+      display: none;
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: background var(--transition);
+    }
+
+    #submit-btn:hover {
+      background: #3a78c2;
+    }
+
+    #error-message {
+      margin-top: 1rem;
+      color: var(--red);
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #result {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--green);
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+
+      #quiz-container {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+    <nav>
+        <div>
+            <a href="https://www.gautam-shrestha.com.np/" class="nav_logo">Gautam</a>
+            <a href="https://www.gautam-shrestha.com.np/" class="icon"><img src="../assets/img/icons/np_flag.gif" alt="Nepal"></a>
+        </div>
+
+        <div>
+            <ul class="nav_pages">
+                <li><a href="https://www.gautam-shrestha.com.np/">Home</a></li>
+                <li><a href="https://www.gautam-shrestha.com.np/experience">Experience</a></li>
+                <li><a href="https://www.gautam-shrestha.com.np/skill">Skill</a></li>
+                <li class="active"><a href="https://www.gautam-shrestha.com.np/project">Project</a></li>
+                <li><a href="https://www.gautam-shrestha.com.np/blog">Blog</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <ul class="social_links">
+                <li><a href="https://drive.google.com/file/d/1Rl_8uSQZs5WmU7S293dmvtmPHpgLv_O8/view?usp=sharing" target="_blank" class="icon" aria-label="Resume"><img src="../assets/img/icons/cv.png" alt="Resume"></a></li>
+                <li><a href="linkedin.html"><img src="../assets/img/icons/linkedin.png" alt="LinkedIn"></a></li>
+                <li><a href="https://www.facebook.com/gautamxhre/" target="_blank"><img src="../assets/img/icons/fb.png" alt="Facebook"></a></li>
+                <li><a href="https://www.instagram.com/gautam.xhr/" target="_blank"><img src="../assets/img/icons/insta.png" alt="Instagram"></a></li>
+            </ul>
+        </div>
+
+        <div class="nav_dropdown" id="nav-dropdown">
+            <ul class="nav_dropdown_list">
+                <li><a href="https://www.gautam-shrestha.com.np/" class="icon"><img src="../assets/img/icons/home.png" alt="Home Icon">Home</a></li>
+                <li><a href="https://www.gautam-shrestha.com.np/experience" class="icon"><img src="../assets/img/icons/experience.png" alt="Experience Icon">Experience</a></li>
+                <li><a href="https://www.gautam-shrestha.com.np/skill" class="icon"><img src="../assets/img/icons/skills.png" alt="Skills Icon">Skills</a></li>
+                <li class="active"><a href="https://www.gautam-shrestha.com.np/project" class="icon"><img src="../assets/img/icons/project.png" alt="Projects Icon">Projects</a></li>
+                <li><a href="https://www.gautam-shrestha.com.np/blog" class="icon"><img src="../assets/img/icons/blog.png" alt="Blog Icon">Blog</a></li>
+            </ul>
+            <div class="nav_close icon" id="nav-close"><img src="../assets/img/icons/cross.png" alt="Close Menu"></div>
+        </div>
+
+        <div class="nav_toggle icon" id="nav-toggle"><img src="../assets/img/icons/menu.png" alt="Open Menu"></div>
+
+        <div class="bottom_nav">
+            <ul class="bottom_nav_list">
+                <li><a href="https://www.gautam-shrestha.com.np/" class="icon" aria-label="Homepage"><img src="../assets/img/icons/home.png" alt="Home Icon">Home</a></li>
+                <li><a href="https://www.gautam-shrestha.com.np/experience" class="icon" aria-label="Experience Section"><img src="../assets/img/icons/experience.png" alt="Experience Icon">Experience</a></li>
+                <li><a href="https://www.gautam-shrestha.com.np/skill" class="icon" aria-label="Skills Section"><img src="../assets/img/icons/skills.png" alt="Skills Icon">Skills</a></li>
+                <li class="active"><a href="https://www.gautam-shrestha.com.np/project" class="icon" aria-label="Projects Section"><img src="../assets/img/icons/project.png" alt="Projects Icon">Projects</a></li>
+                <li><a href="https://www.gautam-shrestha.com.np/blog" class="icon" aria-label="Blog Section"><img src="../assets/img/icons/blog.png" alt="Blog Icon">Blog</a></li>
+            </ul>
+        </div>
+
+    </nav>
+
+    <main>
+  <h1>PDF Question Generator by Gautam Shrestha</h1>
+  
+  <!-- Image Guide -->
+  <img src="../assets/img/projects/format.png" alt="PDF Format Example" class="image-guide" />
+  
+  <div id="quiz-container">
+    <input type="file" id="pdf-upload" accept="application/pdf" />
+    <div id="error-message"></div> <!-- Added error message element -->
+    <div id="quiz"></div>
+    <button id="submit-btn">Submit Quiz</button>
+    <div id="result"></div>
+  </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Gautam Shrestha. All rights reserved.</p>
+        </div>
+    </footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="project.js"></script>
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+
+  <script>
+    const pdfInput = document.getElementById('pdf-upload');
+    const quizDiv = document.getElementById('quiz');
+    const submitBtn = document.getElementById('submit-btn');
+    const resultDiv = document.getElementById('result');
+    const errorMessage = document.getElementById('error-message');  // Error message container
+    let quizData = [];
+
+    // Clean text for comparison
+    function cleanText(text) {
+      return text
+        .toLowerCase()
+        .replace(/[^\w\s]|_/g, '') // remove punctuation
+        .replace(/\s+/g, ' ')      // normalize spaces
+        .trim();
+    }
+
+    // Levenshtein distance algorithm
+    function levenshteinDistance(a, b) {
+      const matrix = Array.from({ length: a.length + 1 }, () =>
+        Array(b.length + 1).fill(0)
+      );
+
+      for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+      for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j - 1] + cost
+          );
+        }
+      }
+
+      return matrix[a.length][b.length];
+    }
+
+    // Similarity 0-1
+    function textSimilarity(a, b) {
+      a = cleanText(a);
+      b = cleanText(b);
+      const distance = levenshteinDistance(a, b);
+      const maxLen = Math.max(a.length, b.length);
+      return maxLen === 0 ? 1 : (1 - distance / maxLen);
+    }
+
+    // Parse multiline questions and answers
+    function parseQuiz(text) {
+      const lines = text.split('\n');
+      const quiz = [];
+      let currentQuestion = '';
+      let currentAnswer = '';
+      let parsingQuestion = false;
+      let parsingAnswer = false;
+
+      for (let line of lines) {
+        line = line.trim();
+
+        if (/^Q\d+:/i.test(line)) {
+          if (currentQuestion && currentAnswer) {
+            quiz.push({
+              question: currentQuestion.trim(),
+              answer: currentAnswer.trim()
+            });
+          }
+          currentQuestion = line.replace(/^Q\d+:\s*/i, '');
+          currentAnswer = '';
+          parsingQuestion = true;
+          parsingAnswer = false;
+        } else if (/^A:/i.test(line)) {
+          currentAnswer = line.replace(/^A:\s*/i, '');
+          parsingAnswer = true;
+          parsingQuestion = false;
+        } else {
+          if (parsingQuestion) {
+            currentQuestion += ' ' + line;
+          } else if (parsingAnswer) {
+            currentAnswer += ' ' + line;
+          }
+        }
+      }
+
+      if (currentQuestion && currentAnswer) {
+        quiz.push({
+          question: currentQuestion.trim(),
+          answer: currentAnswer.trim()
+        });
+      }
+
+      return quiz;
+    }
+
+    // Display quiz inputs
+    function displayQuiz(questions) {
+      quizDiv.innerHTML = '';
+      resultDiv.textContent = '';
+      submitBtn.style.display = 'block';
+      errorMessage.textContent = '';  // Clear error message
+
+      questions.forEach((q, index) => {
+        const block = document.createElement('div');
+        block.className = 'question-block';
+        block.innerHTML = `
+          <div class="question">Q${index + 1}: ${q.question}</div>
+          <input type="text" name="q${index}" placeholder="Your answer..." />
+          <div class="feedback" id="feedback${index}"></div>
+          <div class="correct-answer" id="correct${index}" style="display:none;"></div>
+        `;
+        quizDiv.appendChild(block);
+      });
+    }
+
+    // Handle PDF upload
+    pdfInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const fileReader = new FileReader();
+      fileReader.onload = async function () {
+        const typedArray = new Uint8Array(this.result);
+        const pdf = await pdfjsLib.getDocument(typedArray).promise;
+
+        let fullText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const pageText = content.items.map(item => item.str).join('\n');
+          fullText += pageText + '\n';
+        }
+
+        quizData = parseQuiz(fullText);
+
+        // If no quiz data is found, show error message
+        if (quizData.length === 0) {
+          errorMessage.textContent = 'Error: This PDF does not contain a valid quiz format. Please upload a PDF with questions and answers.';
+        } else {
+          displayQuiz(quizData);
+        }
+      };
+
+      fileReader.readAsArrayBuffer(file);
+    });
+
+    // On submit: grade & show feedback
+    submitBtn.addEventListener('click', () => {
+      let totalScore = 0;
+      const maxScore = quizData.length * 10;
+
+      quizData.forEach((q, index) => {
+        const input = document.querySelector(`input[name="q${index}"]`);
+        const feedbackDiv = document.getElementById(`feedback${index}`);
+        const correctDiv = document.getElementById(`correct${index}`);
+        const userAnswer = input.value;
+        const correctAnswer = q.answer;
+
+        const similarity = textSimilarity(userAnswer, correctAnswer);
+        const score = Math.round(similarity * 10);
+        totalScore += score;
+
+        // Clear previous feedback
+        feedbackDiv.textContent = '';
+        correctDiv.style.display = 'none';
+
+        // Reset input classes
+        input.classList.remove('correct', 'partial', 'incorrect');
+
+        // Show feedback with coloring and score
+        if (similarity >= 0.8) {
+          // Green - good match
+          input.classList.add('correct');
+          feedbackDiv.textContent = `Score: ${score} / 10 ✓`;
+          feedbackDiv.className = 'feedback correct';
+        } else if (similarity >= 0.5) {
+          // Yellow - partial
+          input.classList.add('partial');
+          feedbackDiv.textContent = `Score: ${score} / 10 (Partial)`;
+          feedbackDiv.className = 'feedback partial';
+          // Show correct answer for partial
+          correctDiv.textContent = `Correct answer: ${correctAnswer}`;
+          correctDiv.style.display = 'block';
+        } else {
+          // Red - incorrect
+          input.classList.add('incorrect');
+          feedbackDiv.textContent = `Score: ${score} / 10 ✗`;
+          feedbackDiv.className = 'feedback incorrect';
+          // Show correct answer
+          correctDiv.textContent = `Correct answer: ${correctAnswer}`;
+          correctDiv.style.display = 'block';
+        }
+      });
+
+      resultDiv.textContent = `🎯 Your total score: ${totalScore} / ${maxScore}`;
+
+      // Scroll to top of results
+      resultDiv.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
