@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Video Gallery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background: #1e1e1e;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    #searchBar {
+      flex: 1 1 200px;
+      max-width: 400px;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    /* Video Grid */
+    .videos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .video-card {
+      background: #1e1e1e;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      padding-top: 56.25%; /* Thumbnail aspect ratio only */
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .video-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    }
+
+    .video-card img.thumbnail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Lightbox */
+    #lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    /* Iframe wrapper with relative positioning for mask */
+    #lightbox .iframe-wrapper {
+      position: relative;
+      width: 80%;
+      max-width: 1000px;
+      height: 80%;
+    }
+
+    #lightbox iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 10px;
+    }
+
+    #lightbox span {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 40px;
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    /* Mask to hide Google Drive pop-out button */
+    #lightbox .mask {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 60px;   /* adjust if needed */
+      height: 40px;  /* adjust if needed */
+      background: rgba(0,0,0,0.95);
+      z-index: 10;
+      pointer-events: none; /* allows clicks to pass through */
+      border-top-right-radius: 10px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      header h1 {
+        margin-bottom: 10px;
+      }
+      #searchBar {
+        max-width: 100%;
+      }
+      .videos {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+      #lightbox .iframe-wrapper {
+        width: 95%;
+        height: 60%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 20px; }
+      #lightbox span { font-size: 30px; }
+      #lightbox .iframe-wrapper { height: 50%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>My Video Gallery</h1>
+    <input type="text" id="searchBar" placeholder="Search videos...">
+  </header>
+
+  <!-- Video Grid -->
+  <div class="videos" id="videoList"></div>
+
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <span id="closeBtn">&times;</span>
+    <div class="iframe-wrapper">
+      <iframe id="lightboxVideo" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      <div class="mask"></div>
+    </div>
+  </div>
+
+  <script>
+    const videos = [
+      { id: "1I7epIlI3Ozf3rAuigDa_6iziYO7zRULm", title: "My Name is Khan", thumbnail: "thumbnail/mynameiskhan.jpg" },
+      { id: "FILE_ID_2", title: "My name is kali", thumbnail: "thumbnail/video2.jpg" },
+      { id: "FILE_ID_3", title: "My house", thumbnail: "thumbnail/video3.jpg" }
+    ];
+
+    const container = document.getElementById("videoList");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxVideo = document.getElementById("lightboxVideo");
+    const closeBtn = document.getElementById("closeBtn");
+    const searchBar = document.getElementById("searchBar");
+
+    function displayVideos(list) {
+      container.innerHTML = "";
+      const reversedList = [...list].reverse();
+      reversedList.forEach(video => {
+        const div = document.createElement("div");
+        div.className = "video-card";
+        div.innerHTML = `<img class="thumbnail" src="${video.thumbnail}" alt="${video.title}">`;
+        div.onclick = () => {
+          // Just set iframe src, no CSS hacks
+          lightboxVideo.src = `https://drive.google.com/file/d/${video.id}/preview`;
+          lightbox.style.display = "flex";
+        };
+        container.appendChild(div);
+      });
+    }
+
+    displayVideos(videos);
+
+    searchBar.addEventListener("input", () => {
+      const query = searchBar.value.toLowerCase();
+      const filtered = videos.filter(v => v.title.toLowerCase().includes(query));
+      displayVideos(filtered);
+    });
+
+    closeBtn.onclick = () => {
+      lightboxVideo.src = "";
+      lightbox.style.display = "none";
+    };
+
+    lightbox.onclick = (e) => {
+      if (e.target === lightbox) {
+        lightboxVideo.src = "";
+        lightbox.style.display = "none";
+      }
+    };
+  </script>
+
+</body>
+</html>
