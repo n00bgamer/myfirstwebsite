@@ -1,0 +1,2744 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Existing website styles -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <title>My Nepal Journey</title>
+
+    <style>
+        /* =========================================================
+           NEPAL JOURNEY PAGE
+           ========================================================= */
+
+        .nepal-page {
+            --bg: #f4f1ea;
+            --bg-secondary: #ebe7dd;
+
+            --card: rgba(255, 255, 255, 0.94);
+            --card-solid: #ffffff;
+
+            --text: #1a252f;
+            --text-secondary: #64748b;
+            --text-light: #94a3b8;
+
+            --red: #c0392b;
+            --red-dark: #a93226;
+            --red-light: #fde8e7;
+
+            --gold: #d4a017;
+            --gold-light: #fff7d6;
+
+            --green: #16805c;
+            --green-light: #e5f6ef;
+
+            --blue: #2563a6;
+            --blue-light: #e7f0fa;
+
+            --border: rgba(30, 41, 59, 0.08);
+
+            --shadow: 0 12px 35px rgba(15, 23, 42, 0.07);
+            --shadow-hover: 0 18px 45px rgba(15, 23, 42, 0.13);
+
+            --radius: 20px;
+
+            --map-unvisited: #d9dde2;
+            --map-visited: #c0392b;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(192, 57, 43, 0.06),
+                    transparent 30%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            min-height: 100vh;
+
+            transition:
+                background 0.35s ease,
+                color 0.35s ease;
+        }
+
+        .nepal-page.dark {
+            --bg: #0d1420;
+            --bg-secondary: #151e2c;
+
+            --card: rgba(21, 30, 44, 0.96);
+            --card-solid: #151e2c;
+
+            --text: #f1f5f9;
+            --text-secondary: #a7b2c2;
+            --text-light: #718096;
+
+            --red: #ef6253;
+            --red-dark: #d94b3c;
+            --red-light: rgba(192, 57, 43, 0.16);
+
+            --gold: #e8bd45;
+            --gold-light: rgba(212, 160, 23, 0.13);
+
+            --green: #36b887;
+            --green-light: rgba(22, 128, 92, 0.14);
+
+            --blue: #60a5e8;
+            --blue-light: rgba(37, 99, 166, 0.15);
+
+            --border: rgba(255, 255, 255, 0.08);
+
+            --map-unvisited: #303b4b;
+            --map-visited: #d95345;
+
+            --shadow:
+                0 15px 40px rgba(0, 0, 0, 0.25);
+
+            --shadow-hover:
+                0 20px 50px rgba(0, 0, 0, 0.35);
+        }
+
+        .nepal-page * {
+            box-sizing: border-box;
+        }
+
+        .nepal-page button,
+        .nepal-page input {
+            font-family: inherit;
+        }
+
+        /* =========================================================
+           PAGE HEADER
+           ========================================================= */
+
+        .nepal-header {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 1.5rem;
+        }
+
+        .nepal-header-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .nepal-header h1 {
+            margin: 0;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            line-height: 1.1;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            color: var(--text);
+        }
+
+        .nepal-header h1 span {
+            color: var(--red);
+        }
+
+        .nepal-theme-btn {
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+
+            width: 46px;
+            height: 46px;
+
+            border-radius: 50%;
+            cursor: pointer;
+
+            font-size: 1.1rem;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            box-shadow: var(--shadow);
+
+            transition:
+                transform 0.2s,
+                background 0.25s;
+        }
+
+        .nepal-theme-btn:hover {
+            transform: rotate(12deg) scale(1.05);
+        }
+
+        /* =========================================================
+           MAIN
+           ========================================================= */
+
+        .nepal-container {
+            display: flex;
+
+            max-width: 1400px;
+
+            margin: 0 auto;
+
+            gap: 1.5rem;
+
+            padding: 0 1.5rem 3rem;
+
+            align-items: stretch;
+        }
+
+        /* =========================================================
+           MAP
+           ========================================================= */
+
+        .nepal-map-container {
+            flex: 1.8;
+
+            min-width: 0;
+            min-height: 720px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            box-shadow: var(--shadow);
+
+            padding: 1.25rem;
+
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+
+            overflow: hidden;
+
+            transition:
+                background 0.3s,
+                box-shadow 0.3s;
+
+            animation: nepalMapAppear 0.7s ease both;
+        }
+
+        .nepal-map-container:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .nepal-map-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 1rem;
+
+            margin-bottom: 0.8rem;
+
+            flex-wrap: wrap;
+        }
+
+        .nepal-map-title {
+            display: flex;
+            align-items: center;
+
+            gap: 0.65rem;
+
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .nepal-map-title-icon {
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: var(--red-light);
+
+            font-size: 1.1rem;
+        }
+
+        .nepal-district-count {
+            color: var(--text-secondary);
+
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* =========================================================
+           SEARCH
+           ========================================================= */
+
+        .nepal-search-box {
+            position: relative;
+            width: 230px;
+        }
+
+        .nepal-search-box input {
+            width: 100%;
+
+            padding:
+                0.65rem
+                0.8rem
+                0.65rem
+                2.2rem;
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            outline: none;
+
+            background: var(--bg-secondary);
+
+            color: var(--text);
+
+            font-size: 0.8rem;
+
+            transition:
+                border 0.2s,
+                box-shadow 0.2s;
+        }
+
+        .nepal-search-box input:focus {
+            border-color: var(--red);
+
+            box-shadow:
+                0 0 0 3px
+                var(--red-light);
+        }
+
+        .nepal-search-icon {
+            position: absolute;
+
+            left: 0.75rem;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: var(--text-secondary);
+
+            pointer-events: none;
+        }
+
+        /* =========================================================
+           MAP
+           ========================================================= */
+
+        #nepal-map {
+            width: 100%;
+
+            flex-grow: 1;
+
+            min-height: 580px;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            position: relative;
+        }
+
+        #nepal-map svg {
+            width: 100%;
+            height: 100%;
+
+            max-height: 650px;
+
+            overflow: visible;
+        }
+
+        .nepal-district-path {
+            stroke: var(--card-solid);
+
+            stroke-width: 0.7;
+
+            cursor: pointer;
+
+            transition:
+                fill 0.3s ease,
+                opacity 0.3s ease,
+                stroke-width 0.2s ease,
+                filter 0.2s ease;
+        }
+
+        .nepal-district-visited {
+            fill: var(--map-visited);
+        }
+
+        .nepal-district-unvisited {
+            fill: var(--map-unvisited);
+        }
+
+        .nepal-district-path:hover {
+            stroke: var(--gold);
+
+            stroke-width: 2.5px;
+
+            filter:
+                brightness(1.12)
+                drop-shadow(
+                    0 5px 8px
+                    rgba(0, 0, 0, 0.25)
+                );
+        }
+
+        .nepal-district-path.dimmed {
+            opacity: 0.18;
+        }
+
+        .nepal-district-path.search-match {
+            stroke: var(--gold);
+
+            stroke-width: 3px;
+
+            filter:
+                drop-shadow(
+                    0 0 8px
+                    rgba(212, 160, 23, 0.8)
+                );
+        }
+
+        /* =========================================================
+           TOOLTIP
+           ========================================================= */
+
+        .nepal-tooltip {
+            position: absolute;
+
+            background: rgba(15, 23, 42, 0.97);
+
+            color: white;
+
+            padding: 0.7rem 0.9rem;
+
+            border-radius: 10px;
+
+            pointer-events: none;
+
+            font-size: 0.8rem;
+
+            opacity: 0;
+
+            visibility: hidden;
+
+            z-index: 9999;
+
+            box-shadow:
+                0 10px 30px
+                rgba(0, 0, 0, 0.3);
+
+            white-space: nowrap;
+
+            transition:
+                opacity 0.12s ease,
+                visibility 0.12s ease;
+        }
+
+        .nepal-tooltip.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nepal-tooltip-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            line-height: 1.2;
+        }
+
+        .nepal-tooltip-status {
+            margin-top: 3px;
+            opacity: 0.8;
+            font-size: 0.7rem;
+        }
+
+        /* =========================================================
+           LEGEND
+           ========================================================= */
+
+        .nepal-legend {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 1.2rem;
+
+            margin-top: 0.5rem;
+
+            font-size: 0.75rem;
+
+            color: var(--text-secondary);
+
+            font-weight: 600;
+        }
+
+        .nepal-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .nepal-legend-dot {
+            width: 10px;
+            height: 10px;
+
+            border-radius: 50%;
+
+            display: inline-block;
+        }
+
+        .nepal-legend-dot.visited {
+            background: var(--map-visited);
+        }
+
+        .nepal-legend-dot.unvisited {
+            background: var(--map-unvisited);
+        }
+
+        /* =========================================================
+           SIDEBAR
+           ========================================================= */
+
+        .nepal-sidebar {
+            flex: 1;
+
+            min-width: 310px;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 1.25rem;
+        }
+
+        .nepal-card {
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            padding: 1.35rem;
+
+            box-shadow: var(--shadow);
+
+            transition:
+                background 0.3s,
+                box-shadow 0.3s,
+                transform 0.25s;
+
+            animation:
+                nepalMapAppear 0.7s ease both;
+        }
+
+        .nepal-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .nepal-card-title {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 1rem;
+
+            margin-bottom: 1rem;
+        }
+
+        .nepal-card-title h3 {
+            margin: 0;
+
+            font-size: 1rem;
+
+            color: var(--text);
+        }
+
+        .nepal-card-title span {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        /* =========================================================
+           PROGRESS
+           ========================================================= */
+
+        .nepal-progress-card {
+            text-align: center;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    var(--card),
+                    var(--red-light)
+                );
+        }
+
+        .nepal-circular-chart {
+            display: block;
+
+            margin: 0 auto 0.5rem;
+
+            width: 145px;
+            height: 145px;
+        }
+
+        .nepal-circle-bg {
+            fill: none;
+
+            stroke:
+                rgba(127, 140, 141, 0.16);
+
+            stroke-width: 3.5;
+        }
+
+        .nepal-circle {
+            fill: none;
+
+            stroke: var(--red);
+
+            stroke-width: 3;
+
+            stroke-linecap: round;
+
+            transition:
+                stroke-dasharray 1.2s ease-out;
+        }
+
+        .nepal-percentage {
+            fill: var(--text);
+
+            font-family: Arial, sans-serif;
+
+            font-size: 0.5em;
+
+            text-anchor: middle;
+
+            font-weight: 800;
+        }
+
+        .nepal-progress-number {
+            font-size: 1.35rem;
+
+            font-weight: 800;
+
+            color: var(--text);
+        }
+
+        .nepal-progress-remaining {
+            color: var(--text-secondary);
+
+            font-size: 0.75rem;
+
+            margin-top: 0.15rem;
+        }
+
+        /* =========================================================
+           VISITED LIST
+           ========================================================= */
+
+        .nepal-list-container {
+            max-height: 400px;
+
+            overflow-y: auto;
+
+            padding-right: 4px;
+        }
+
+        .nepal-list-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .nepal-list-container::-webkit-scrollbar-thumb {
+            background: var(--text-light);
+
+            border-radius: 10px;
+        }
+
+        .nepal-list-item {
+            padding: 0.7rem 0.55rem;
+
+            border-bottom: 1px solid var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            cursor: pointer;
+
+            border-radius: 8px;
+
+            transition:
+                background 0.2s,
+                padding-left 0.2s;
+        }
+
+        .nepal-list-item:hover {
+            background: var(--bg-secondary);
+
+            padding-left: 0.8rem;
+        }
+
+        .nepal-list-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .nepal-visited-dot {
+            width: 8px;
+            height: 8px;
+
+            background: var(--green);
+
+            border-radius: 50%;
+        }
+
+        /* =========================================================
+           MODAL
+           ========================================================= */
+
+        .nepal-modal-overlay {
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0, 0, 0, 0.62);
+
+            backdrop-filter: blur(5px);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transition: opacity 0.25s;
+
+            z-index: 10000;
+        }
+
+        .nepal-modal-overlay.active {
+            opacity: 1;
+
+            pointer-events: auto;
+        }
+
+        .nepal-modal {
+            background: var(--card-solid);
+
+            width: min(92%, 470px);
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            border-radius: 22px;
+
+            position: relative;
+
+            transform:
+                translateY(25px)
+                scale(0.97);
+
+            transition:
+                transform 0.3s ease;
+
+            box-shadow:
+                0 25px 70px
+                rgba(0, 0, 0, 0.3);
+
+            overflow: hidden;
+        }
+
+        .nepal-modal-overlay.active .nepal-modal {
+            transform:
+                translateY(0)
+                scale(1);
+        }
+
+        .nepal-close-btn {
+            position: absolute;
+
+            top: 0.9rem;
+            right: 0.9rem;
+
+            z-index: 5;
+
+            border: none;
+
+            background:
+                rgba(0, 0, 0, 0.35);
+
+            color: white;
+
+            width: 34px;
+            height: 34px;
+
+            border-radius: 50%;
+
+            cursor: pointer;
+
+            font-size: 1.25rem;
+
+            line-height: 1;
+
+            transition:
+                background 0.2s;
+        }
+
+        .nepal-close-btn:hover {
+            background:
+                rgba(0, 0, 0, 0.55);
+        }
+
+        .nepal-modal-cover-img {
+            width: 100%;
+
+            height: 190px;
+
+            object-fit: cover;
+
+            display: none;
+        }
+
+        .nepal-modal-cover-placeholder {
+            height: 150px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--red),
+                    var(--gold)
+                );
+
+            font-size: 3.5rem;
+
+            color: white;
+        }
+
+        .nepal-modal-body {
+            padding: 1.6rem;
+        }
+
+        .nepal-modal-title {
+            margin: 0 0 0.6rem;
+
+            font-size: 1.8rem;
+
+            font-weight: 800;
+        }
+
+        .nepal-status-badge {
+            display: inline-block;
+
+            padding: 0.35rem 0.75rem;
+
+            border-radius: 999px;
+
+            font-size: 0.7rem;
+
+            font-weight: 700;
+
+            margin-bottom: 0.8rem;
+        }
+
+        .nepal-status-visited {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .nepal-status-unvisited {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+
+        .nepal-modal-date {
+            color: var(--text-secondary);
+
+            font-size: 0.75rem;
+
+            font-weight: 600;
+
+            margin-bottom: 0.8rem;
+        }
+
+        .nepal-modal-notes {
+            line-height: 1.7;
+
+            color: var(--text-secondary);
+
+            font-size: 0.85rem;
+
+            margin: 0;
+        }
+
+        /* =========================================================
+           ANIMATION
+           ========================================================= */
+
+        @keyframes nepalMapAppear {
+            from {
+                opacity: 0;
+
+                transform:
+                    translateY(20px)
+                    scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+        /* =========================================================
+           MOBILE
+           ========================================================= */
+
+        @media (max-width: 850px) {
+
+            .nepal-container {
+                flex-direction: column;
+
+                padding:
+                    0 1rem 2rem;
+            }
+
+            .nepal-map-container {
+                order: 1;
+
+                width: 100%;
+
+                min-height: 600px;
+
+                height: 600px;
+            }
+
+            .nepal-sidebar {
+                order: 2;
+
+                width: 100%;
+
+                min-width: 0;
+            }
+
+            #nepal-map {
+                min-height: 480px;
+            }
+
+            .nepal-header {
+                padding:
+                    2rem 1rem 1.2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .nepal-header-top {
+                align-items: center;
+            }
+
+            .nepal-header h1 {
+                font-size: 2rem;
+            }
+
+            .nepal-map-container {
+                min-height: 510px;
+
+                height: 510px;
+
+                padding: 0.8rem;
+
+                border-radius: 16px;
+            }
+
+            #nepal-map {
+                min-height: 400px;
+            }
+
+            #nepal-map svg {
+                max-height: 430px;
+            }
+
+            .nepal-search-box {
+                width: 100%;
+            }
+
+            .nepal-map-topbar {
+                align-items: stretch;
+            }
+
+            .nepal-map-topbar .nepal-search-box {
+                order: 3;
+            }
+
+            .nepal-legend {
+                margin-top: 0;
+
+                padding-bottom: 0.2rem;
+            }
+
+            .nepal-card {
+                padding: 1.1rem;
+
+                border-radius: 16px;
+            }
+
+            .nepal-circular-chart {
+                width: 125px;
+                height: 125px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .nepal-page *,
+            .nepal-page *::before,
+            .nepal-page *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================================
+         EXISTING WEBSITE HEADER
+         ========================================================= -->
+
+    <nav>
+        <div>
+            <a href="https://www.gautam-shrestha.com.np/" class="nav_logo">
+                Gautam
+            </a>
+
+            <a
+                href="https://www.gautam-shrestha.com.np/"
+                class="icon"
+            >
+                <img
+                    src="../assets/img/icons/np_flag.gif"
+                    alt="Nepal"
+                >
+            </a>
+        </div>
+
+        <div>
+            <ul class="nav_pages">
+                <li>
+                    <a href="../index">Home</a>
+                </li>
+
+                <li>
+                    <a href="../experience">Experience</a>
+                </li>
+
+                <li>
+                    <a href="../skill">Skill</a>
+                </li>
+
+                <li>
+                    <a href="../project">Project</a>
+                </li>
+
+                <li class="active">
+                    <a href="../blog">Blog</a>
+                </li>
+            </ul>
+        </div>
+
+        <div>
+            <ul class="social_links">
+                <li>
+                    <a href="../linkedin.html">
+                        <img
+                            src="../assets/img/icons/linkedin.png"
+                            alt="LinkedIn"
+                        >
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                        href="https://www.facebook.com/gautamxhre/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <img
+                            src="../assets/img/icons/fb.png"
+                            alt="Facebook"
+                        >
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                        href="https://www.instagram.com/gautam.xhr/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <img
+                            src="../assets/img/icons/insta.png"
+                            alt="Instagram"
+                        >
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div
+            class="nav_dropdown"
+            id="nav-dropdown"
+        >
+            <ul class="nav_dropdown_list">
+
+                <li>
+                    <a
+                        href="../index"
+                        class="icon"
+                    >
+                        <img
+                            src="../assets/img/icons/home.png"
+                            alt="Home Icon"
+                        >
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                        href="../experience"
+                        class="icon"
+                    >
+                        <img
+                            src="../assets/img/icons/experience.png"
+                            alt="Experience Icon"
+                        >
+                        Experience
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                        href="../skill"
+                        class="icon"
+                    >
+                        <img
+                            src="../assets/img/icons/skills.png"
+                            alt="Skills Icon"
+                        >
+                        Skills
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                        href="../project"
+                        class="icon"
+                    >
+                        <img
+                            src="../assets/img/icons/project.png"
+                            alt="Projects Icon"
+                        >
+                        Projects
+                    </a>
+                </li>
+
+                <li class="active">
+                    <a
+                        href="../blog"
+                        class="icon"
+                    >
+                        <img
+                            src="../assets/img/icons/blog.png"
+                            alt="Blog Icon"
+                        >
+                        Blog
+                    </a>
+                </li>
+
+            </ul>
+
+            <div
+                class="nav_close icon"
+                id="nav-close"
+            >
+                <img
+                    src="../assets/img/icons/cross.png"
+                    alt="Close Menu"
+                >
+            </div>
+        </div>
+
+        <div
+            class="nav_toggle icon"
+            id="nav-toggle"
+        >
+            <img
+                src="../assets/img/icons/menu.png"
+                alt="Open Menu"
+            >
+        </div>
+    </nav>
+
+
+    <!-- =========================================================
+         NEPAL JOURNEY
+         ========================================================= -->
+
+    <div
+        class="nepal-page"
+        id="nepal-page"
+    >
+
+        <!-- HEADER -->
+
+        <header class="nepal-header">
+
+            <div class="nepal-header-top">
+
+                <div>
+
+                    <h1>
+                        My <span>Nepal</span> Journey
+                    </h1>
+
+                </div>
+
+                <button
+                    id="nepal-theme-btn"
+                    class="nepal-theme-btn"
+                    aria-label="Toggle dark mode"
+                    title="Toggle dark mode"
+                >
+                    🌙
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- MAIN -->
+
+        <main class="nepal-container">
+
+            <!-- MAP -->
+
+            <section class="nepal-map-container">
+
+                <div
+                    id="nepal-tooltip"
+                    class="nepal-tooltip"
+                ></div>
+
+                <div class="nepal-map-topbar">
+
+                    <div class="nepal-map-title">
+
+                        <div class="nepal-map-title-icon">
+                            🗺️
+                        </div>
+
+                        <div>
+
+                            <div>
+                                Nepal District Map
+                            </div>
+
+                            <div
+                                class="nepal-district-count"
+                                id="nepal-map-count"
+                            >
+                                Loading districts...
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="nepal-search-box">
+
+                        <span class="nepal-search-icon">
+                            🔎
+                        </span>
+
+                        <input
+                            type="text"
+                            id="nepal-search-input"
+                            placeholder="Search district..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div id="nepal-map"></div>
+
+
+                <div class="nepal-legend">
+
+                    <div class="nepal-legend-item">
+
+                        <span class="nepal-legend-dot visited"></span>
+
+                        Visited
+
+                    </div>
+
+                    <div class="nepal-legend-item">
+
+                        <span class="nepal-legend-dot unvisited"></span>
+
+                        Not Visited
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SIDEBAR -->
+
+            <aside class="nepal-sidebar">
+
+                <!-- PROGRESS -->
+
+                <div class="nepal-card nepal-progress-card">
+
+                    <div class="nepal-card-title">
+
+                        <h3>
+                            Travel Progress
+                        </h3>
+
+                        <span>
+                            77 districts
+                        </span>
+
+                    </div>
+
+
+                    <svg
+                        viewBox="0 0 36 36"
+                        class="nepal-circular-chart"
+                    >
+
+                        <path
+                            class="nepal-circle-bg"
+                            d="
+                                M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831
+                            "
+                        />
+
+                        <path
+                            class="nepal-circle"
+                            id="nepal-progress-circle"
+                            stroke-dasharray="0, 100"
+                            d="
+                                M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831
+                            "
+                        />
+
+                        <text
+                            x="18"
+                            y="20.85"
+                            class="nepal-percentage"
+                            id="nepal-progress-percentage"
+                        >
+                            0%
+                        </text>
+
+                    </svg>
+
+
+                    <div
+                        class="nepal-progress-number"
+                        id="nepal-progress-text"
+                    >
+                        0 / 77 Visited
+                    </div>
+
+
+                    <div
+                        class="nepal-progress-remaining"
+                        id="nepal-remaining-text"
+                    >
+                        77 districts remaining
+                    </div>
+
+                </div>
+
+
+                <!-- VISITED DISTRICTS -->
+
+                <div class="nepal-card">
+
+                    <div class="nepal-card-title">
+
+                        <h3>
+                            Visited Districts
+                        </h3>
+
+                        <span id="nepal-visited-list-count">
+                            0
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        id="nepal-visited-list"
+                        class="nepal-list-container"
+                    ></div>
+
+                </div>
+
+            </aside>
+
+        </main>
+
+
+        <!-- =====================================================
+             MODAL
+             ===================================================== -->
+
+        <div
+            id="nepal-modal-overlay"
+            class="nepal-modal-overlay"
+        >
+
+            <div class="nepal-modal">
+
+                <button
+                    class="nepal-close-btn"
+                    onclick="closeNepalModal()"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+
+                <div
+                    id="nepal-modal-placeholder"
+                    class="nepal-modal-cover-placeholder"
+                >
+                    🏔️
+                </div>
+
+
+                <img
+                    id="nepal-modal-img"
+                    class="nepal-modal-cover-img"
+                    src=""
+                    alt="District Photo"
+                />
+
+
+                <div class="nepal-modal-body">
+
+                    <h2
+                        id="nepal-modal-title"
+                        class="nepal-modal-title"
+                    >
+                        District Name
+                    </h2>
+
+
+                    <div
+                        id="nepal-modal-status"
+                        class="nepal-status-badge"
+                    >
+                        Visited
+                    </div>
+
+
+                    <div
+                        id="nepal-modal-date"
+                        class="nepal-modal-date"
+                    ></div>
+
+
+                    <p
+                        id="nepal-modal-notes"
+                        class="nepal-modal-notes"
+                    ></p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         EXISTING WEBSITE FOOTER
+         ========================================================= -->
+
+    <footer>
+        <div class="footer-bottom">
+            <p>
+                &copy; 2024 Gautam Shrestha. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+
+    <!-- Existing website JavaScript -->
+
+    <script
+        src="../assets/js/main.js"
+        defer
+    ></script>
+
+
+    <script
+        src="../assets/js/blog.js"
+        defer
+    ></script>
+
+
+    <!-- =========================================================
+         NEPAL JOURNEY JAVASCRIPT
+         ========================================================= -->
+
+    <script>
+
+        /* =====================================================
+           YOUR TRAVEL DATA
+           ===================================================== */
+
+        const myVisitedDistricts = {
+
+            // ==================== KOSHI ====================
+
+            "Ilam": {
+                year: "2026",
+                notes: "Tea gardens and beautiful green hills."
+            },
+
+            "Jhapa": {
+                year: "2026",
+                notes: "Eastern Terai and tea country."
+            },
+
+            "Morang": {
+                year: "2026",
+                notes: "Busy cities and eastern Terai."
+            },
+
+            "Sunsari": {
+                year: "2026",
+                notes: "Eastern Terai and beautiful landscapes."
+            },
+
+            "Udayapur": {
+                year: "2026",
+                notes: "Valleys, hills and Terai landscapes."
+            },
+
+
+            // ==================== MADHESH ====================
+
+            "Parsa": {
+                year: "2026",
+                notes: "Visited Parsa."
+            },
+
+            "Bara": {
+                year: "2026",
+                notes: "Visited Bara."
+            },
+
+            "Rautahat": {
+                year: "2026",
+                notes: "Visited Rautahat."
+            },
+
+            "Sarlahi": {
+                year: "2026",
+                notes: "Visited Sarlahi."
+            },
+
+            "Dhanusha": {
+                year: "2026",
+                notes: "Janakpur and rich cultural heritage."
+            },
+
+            "Mahottari": {
+                year: "2026",
+                notes: "Terai landscapes and local culture."
+            },
+
+            "Saptari": {
+                year: "2026",
+                notes: "Terai plains and cultural diversity."
+            },
+
+            "Siraha": {
+                year: "2026",
+                notes: "Eastern Terai and cultural heritage."
+            },
+
+
+            // ==================== BAGMATI ====================
+
+            "Kathmandu": {
+                year: "2026",
+                notes: "Capital city vibes.",
+                photo: "../assets/img/blogs/nepal/ktm.png"
+            },
+
+            "Lalitpur": {
+                year: "2026",
+                notes: "City of fine arts.",
+                photo: "../assets/img/blogs/nepal/lalitpur.jpg"
+            },
+
+            "Bhaktapur": {
+                year: "2026",
+                notes: "City of devotees.",
+                photo: "../assets/img/blogs/nepal/bhaktapur.jpg"
+            },
+
+            "Nuwakot": {
+                year: "2026",
+                notes: "Beautiful hills and historic places."
+            },
+
+            "Makawanpur": {
+                year: "2026",
+                notes: "Hilly landscapes and peaceful roads."
+            },
+
+            "Chitawan": {
+                year: "2026",
+                notes: "Jungle, wildlife and beautiful sunsets.",
+                photo: "../assets/img/blogs/nepal/chitwan.jpg"
+            },
+
+            "Dhading": {
+                year: "2026",
+                notes: "Beautiful hills and rivers."
+            },
+
+            "Sindhupalchok": {
+                year: "2026",
+                notes: "Mountain views and adventure."
+            },
+
+            "Dolakha": {
+                year: "2026",
+                notes: "Mountain district with amazing scenery."
+            },
+
+            "Sindhuli": {
+                year: "2026",
+                notes: "Long roads through the hills."
+            },
+
+            "Kabhrepalanchok": {
+                year: "2026",
+                notes: "Green hills and countryside."
+            },
+
+            "Rasuwa": {
+                year: "2026",
+                notes: "Himalayan scenery and trekking routes."
+            },
+
+
+            // ==================== GANDAKI ====================
+
+            "Baglung": {
+                year: "2026",
+                notes: "Beautiful mountain scenery."
+            },
+
+            "Tanahu": {
+                year: "2026",
+                notes: "Beautiful countryside."
+            },
+
+            "Kaski": {
+                year: "2026",
+                notes: "Pokhara and incredible mountain views.",
+                photo: "../assets/img/blogs/nepal/kaski.jpg"
+            },
+
+            "Myagdi": {
+                year: "2026",
+                notes: "Gateway to the mountains."
+            },
+
+            "Lamjung": {
+                year: "2026",
+                notes: "Beautiful Himalayan foothills."
+            },
+
+            "Nawalparasi East": {
+                year: "2026",
+                notes: "Terai and Chure landscapes."
+            },
+
+            "Manang": {
+                year: "2026",
+                notes: "High mountains and dramatic landscapes."
+            },
+
+            "Mustang": {
+                year: "2026",
+                notes: "Desert-like Himalayan landscapes."
+            }
+
+        };
+
+
+        /* =====================================================
+           SETTINGS
+           ===================================================== */
+
+        const TOTAL_DISTRICTS = 77;
+
+        const geoJsonUrl =
+            "https://raw.githubusercontent.com/mesaugat/geoJSON-Nepal/master/nepal-districts-new.geojson";
+
+
+        /* =====================================================
+           HELPERS
+           ===================================================== */
+
+        function normalizeNepalName(name) {
+
+            return name
+                ? name
+                    .toLowerCase()
+                    .replace(/[^a-z]/g, '')
+                : '';
+
+        }
+
+
+        function getNepalDistrictName(feature) {
+
+            const p = feature.properties;
+
+            if (!p) {
+                return "Unknown";
+            }
+
+            const possibleKeys = [
+                "DISTRICT",
+                "District",
+                "district",
+                "NAME",
+                "Name",
+                "name",
+                "FIRST_DIST"
+            ];
+
+            for (const key of possibleKeys) {
+
+                if (
+                    p[key] &&
+                    typeof p[key] === "string"
+                ) {
+
+                    return p[key].trim();
+
+                }
+
+            }
+
+            for (const key in p) {
+
+                if (
+                    typeof p[key] === "string" &&
+                    p[key].length > 2 &&
+                    !p[key]
+                        .toLowerCase()
+                        .includes("province")
+                ) {
+
+                    return p[key].trim();
+
+                }
+
+            }
+
+            return "Unknown";
+        }
+
+
+        function formatNepalDistrictName(name) {
+
+            return name
+                .split(" ")
+                .map(
+                    word =>
+                        word.charAt(0).toUpperCase() +
+                        word.slice(1).toLowerCase()
+                )
+                .join(" ");
+
+        }
+
+
+        function displayNepalText(text) {
+
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        /* =====================================================
+           VISITED MAP
+           ===================================================== */
+
+        const visitedMap = new Map();
+
+        Object.keys(myVisitedDistricts).forEach(key => {
+
+            visitedMap.set(
+                normalizeNepalName(key),
+                {
+                    originalName: key,
+                    ...myVisitedDistricts[key]
+                }
+            );
+
+        });
+
+
+        /* =====================================================
+           MAP SETUP
+           ===================================================== */
+
+        const mapWidth = 900;
+        const mapHeight = 650;
+
+        const nepalSvg =
+            d3
+                .select("#nepal-map")
+                .append("svg")
+                .attr(
+                    "viewBox",
+                    `0 0 ${mapWidth} ${mapHeight}`
+                )
+                .attr(
+                    "preserveAspectRatio",
+                    "xMidYMid meet"
+                );
+
+
+        const nepalProjection =
+            d3.geoMercator();
+
+
+        const nepalPath =
+            d3
+                .geoPath()
+                .projection(nepalProjection);
+
+
+        const nepalTooltip =
+            d3.select("#nepal-tooltip");
+
+
+        let allDistrictsData = [];
+
+        let currentSearch = "";
+
+
+        /* =====================================================
+           LOAD MAP
+           ===================================================== */
+
+        d3.json(geoJsonUrl)
+
+            .then(data => {
+
+                nepalProjection.fitSize(
+                    [mapWidth, mapHeight],
+                    data
+                );
+
+                allDistrictsData = [];
+
+                data.features.forEach(feature => {
+
+                    const rawName =
+                        getNepalDistrictName(feature);
+
+                    const normName =
+                        normalizeNepalName(rawName);
+
+                    const visitData =
+                        visitedMap.get(normName) || null;
+
+                    allDistrictsData.push({
+
+                        feature,
+
+                        name:
+                            formatNepalDistrictName(
+                                rawName
+                            ),
+
+                        normName,
+
+                        isVisited:
+                            !!visitData,
+
+                        visitData
+
+                    });
+
+                });
+
+
+                drawNepalMap(data.features);
+
+                updateNepalDashboard();
+
+            })
+
+            .catch(error => {
+
+                console.error(
+                    "Nepal map loading error:",
+                    error
+                );
+
+                document.getElementById(
+                    "nepal-map"
+                ).innerHTML = `
+
+                    <div
+                        style="
+                            color:var(--red);
+                            text-align:center;
+                            padding:2rem;
+                        "
+                    >
+
+                        <strong>
+                            Unable to load the map.
+                        </strong>
+
+                        <br>
+
+                        Please check your internet connection.
+
+                    </div>
+
+                `;
+
+            });
+
+
+        /* =====================================================
+           DRAW MAP
+           ===================================================== */
+
+        function drawNepalMap(features) {
+
+            nepalSvg
+                .selectAll("path")
+                .remove();
+
+
+            const districts =
+                nepalSvg
+                    .selectAll(".nepal-district-path")
+                    .data(features)
+                    .enter()
+                    .append("path");
+
+
+            districts
+
+                .attr(
+                    "class",
+                    d => {
+
+                        const name =
+                            getNepalDistrictName(d);
+
+                        const visited =
+                            visitedMap.has(
+                                normalizeNepalName(name)
+                            );
+
+                        return (
+                            "nepal-district-path " +
+                            (
+                                visited
+                                    ? "nepal-district-visited"
+                                    : "nepal-district-unvisited"
+                            )
+                        );
+
+                    }
+                )
+
+                .attr(
+                    "d",
+                    nepalPath
+                );
+
+
+            /* Mouse events */
+
+            districts
+
+                .on(
+                    "mouseenter",
+                    function(event, d) {
+
+                        const rawName =
+                            getNepalDistrictName(d);
+
+                        const displayName =
+                            formatNepalDistrictName(
+                                rawName
+                            );
+
+                        const normalized =
+                            normalizeNepalName(
+                                rawName
+                            );
+
+                        const visited =
+                            visitedMap.has(
+                                normalized
+                            );
+
+
+                        d3
+                            .select(this)
+                            .raise();
+
+
+                        nepalTooltip
+
+                            .html(`
+
+                                <div
+                                    class="nepal-tooltip-name"
+                                >
+                                    ${displayNepalText(displayName)}
+                                </div>
+
+                                <div
+                                    class="nepal-tooltip-status"
+                                >
+                                    ${
+                                        visited
+                                            ? "🟢 Visited"
+                                            : "⚪ Not Visited"
+                                    }
+                                </div>
+
+                            `)
+
+                            .classed(
+                                "visible",
+                                true
+                            );
+
+
+                        moveNepalTooltip(event);
+
+                    }
+                )
+
+                .on(
+                    "mousemove",
+                    function(event) {
+
+                        moveNepalTooltip(event);
+
+                    }
+                )
+
+                .on(
+                    "mouseleave",
+                    function() {
+
+                        nepalTooltip
+                            .classed(
+                                "visible",
+                                false
+                            );
+
+                    }
+                )
+
+                .on(
+                    "click",
+                    function(event, d) {
+
+                        const name =
+                            getNepalDistrictName(d);
+
+                        const target =
+                            allDistrictsData.find(
+                                item =>
+                                    item.normName ===
+                                    normalizeNepalName(name)
+                            );
+
+                        if (target) {
+                            openNepalModal(target);
+                        }
+
+                    }
+                );
+
+
+            /* Map animation */
+
+            districts
+                .style("opacity", 0)
+                .transition()
+                .duration(700)
+                .delay((d, i) => i * 8)
+                .style("opacity", 1);
+
+        }
+
+
+        /* =====================================================
+           TOOLTIP
+           ===================================================== */
+
+        function moveNepalTooltip(event) {
+
+            const mapContainer =
+                document.querySelector(
+                    ".nepal-map-container"
+                );
+
+            const tooltipNode =
+                nepalTooltip.node();
+
+
+            if (
+                !mapContainer ||
+                !tooltipNode
+            ) {
+                return;
+            }
+
+
+            const mapRect =
+                mapContainer.getBoundingClientRect();
+
+
+            let x =
+                event.clientX -
+                mapRect.left +
+                15;
+
+
+            let y =
+                event.clientY -
+                mapRect.top -
+                15;
+
+
+            const tooltipRect =
+                tooltipNode.getBoundingClientRect();
+
+
+            if (
+                x + tooltipRect.width >
+                mapRect.width - 10
+            ) {
+
+                x =
+                    event.clientX -
+                    mapRect.left -
+                    tooltipRect.width -
+                    15;
+
+            }
+
+
+            if (x < 10) {
+                x = 10;
+            }
+
+
+            if (
+                y - tooltipRect.height <
+                10
+            ) {
+
+                y =
+                    event.clientY -
+                    mapRect.top +
+                    25;
+
+            }
+
+
+            if (
+                y + tooltipRect.height >
+                mapRect.height - 10
+            ) {
+
+                y =
+                    mapRect.height -
+                    tooltipRect.height -
+                    10;
+
+            }
+
+
+            nepalTooltip
+                .style(
+                    "left",
+                    `${x}px`
+                )
+                .style(
+                    "top",
+                    `${y}px`
+                );
+
+        }
+
+
+        /* =====================================================
+           DASHBOARD
+           ===================================================== */
+
+        function updateNepalDashboard() {
+
+            const visited =
+                allDistrictsData.filter(
+                    district =>
+                        district.isVisited
+                );
+
+
+            const visitedCount =
+                visited.length;
+
+
+            const percentage =
+                Math.round(
+                    (
+                        visitedCount /
+                        TOTAL_DISTRICTS
+                    ) * 100
+                );
+
+
+            document.getElementById(
+                "nepal-progress-text"
+            ).textContent =
+                `${visitedCount} / ${TOTAL_DISTRICTS} Visited`;
+
+
+            document.getElementById(
+                "nepal-remaining-text"
+            ).textContent =
+                `${
+                    TOTAL_DISTRICTS -
+                    visitedCount
+                } districts remaining`;
+
+
+            document.getElementById(
+                "nepal-progress-percentage"
+            ).textContent =
+                `${percentage}%`;
+
+
+            document
+                .getElementById(
+                    "nepal-progress-circle"
+                )
+                .setAttribute(
+                    "stroke-dasharray",
+                    `${percentage}, 100`
+                );
+
+
+            document.getElementById(
+                "nepal-map-count"
+            ).textContent =
+                `${allDistrictsData.length} districts`;
+
+
+            updateNepalVisitedList(visited);
+
+        }
+
+
+        /* =====================================================
+           VISITED LIST
+           ===================================================== */
+
+        function updateNepalVisitedList(visited) {
+
+            const list =
+                document.getElementById(
+                    "nepal-visited-list"
+                );
+
+
+            const sorted =
+                [...visited].sort(
+                    (a, b) =>
+                        a.name.localeCompare(b.name)
+                );
+
+
+            document.getElementById(
+                "nepal-visited-list-count"
+            ).textContent =
+                sorted.length;
+
+
+            if (!sorted.length) {
+
+                list.innerHTML = `
+
+                    <div
+                        style="
+                            padding:1rem;
+                            color:var(--text-secondary);
+                            font-size:0.75rem;
+                            text-align:center;
+                        "
+                    >
+                        No districts visited yet.
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            list.innerHTML =
+                sorted
+                    .map(
+                        district => `
+
+                            <div
+                                class="nepal-list-item"
+                                onclick="openNepalModalByName('${district.normName}')"
+                            >
+
+                                <div>
+
+                                    <div
+                                        class="nepal-list-name"
+                                    >
+                                        ${displayNepalText(district.name)}
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="nepal-visited-dot"
+                                ></span>
+
+                            </div>
+
+                        `
+                    )
+                    .join("");
+
+        }
+
+
+        /* =====================================================
+           MODAL
+           ===================================================== */
+
+        function openNepalModal(data) {
+
+            document.getElementById(
+                "nepal-modal-title"
+            ).textContent =
+                data.name;
+
+
+            const status =
+                document.getElementById(
+                    "nepal-modal-status"
+                );
+
+
+            const date =
+                document.getElementById(
+                    "nepal-modal-date"
+                );
+
+
+            const notes =
+                document.getElementById(
+                    "nepal-modal-notes"
+                );
+
+
+            const image =
+                document.getElementById(
+                    "nepal-modal-img"
+                );
+
+
+            const placeholder =
+                document.getElementById(
+                    "nepal-modal-placeholder"
+                );
+
+
+            date.textContent = "";
+
+            notes.textContent = "";
+
+            image.src = "";
+
+            image.style.display = "none";
+
+            placeholder.style.display = "none";
+
+
+            if (data.isVisited) {
+
+                status.className =
+                    "nepal-status-badge nepal-status-visited";
+
+                status.textContent =
+                    "🟢 Visited";
+
+
+                const visit =
+                    data.visitData || {};
+
+
+                if (visit.year) {
+
+                    date.textContent =
+                        visit.year;
+
+                }
+
+
+                if (visit.notes) {
+
+                    notes.textContent =
+                        visit.notes;
+
+                }
+
+
+                if (visit.photo) {
+
+                    image.src =
+                        visit.photo;
+
+                    image.style.display =
+                        "block";
+
+                    placeholder.style.display =
+                        "none";
+
+                }
+
+                else {
+
+                    placeholder.style.display =
+                        "flex";
+
+                }
+
+            }
+
+            else {
+
+                status.className =
+                    "nepal-status-badge nepal-status-unvisited";
+
+                status.textContent =
+                    "⚪ Not Visited";
+
+                placeholder.style.display =
+                    "flex";
+
+            }
+
+
+            document
+                .getElementById(
+                    "nepal-modal-overlay"
+                )
+                .classList.add(
+                    "active"
+                );
+
+        }
+
+
+        function openNepalModalByName(normName) {
+
+            const target =
+                allDistrictsData.find(
+                    district =>
+                        district.normName ===
+                        normName
+                );
+
+
+            if (target) {
+                openNepalModal(target);
+            }
+
+        }
+
+
+        function closeNepalModal() {
+
+            document
+                .getElementById(
+                    "nepal-modal-overlay"
+                )
+                .classList.remove(
+                    "active"
+                );
+
+        }
+
+
+        /* =====================================================
+           MODAL EVENTS
+           ===================================================== */
+
+        document
+            .getElementById(
+                "nepal-modal-overlay"
+            )
+            .addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target.id ===
+                        "nepal-modal-overlay"
+                    ) {
+
+                        closeNepalModal();
+
+                    }
+
+                }
+            );
+
+
+        document.addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    closeNepalModal();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           SEARCH
+           ===================================================== */
+
+        document
+            .getElementById(
+                "nepal-search-input"
+            )
+            .addEventListener(
+                "input",
+                event => {
+
+                    currentSearch =
+                        normalizeNepalName(
+                            event.target.value
+                        );
+
+                    applyNepalFilters();
+
+                }
+            );
+
+
+        function applyNepalFilters() {
+
+            nepalSvg
+                .selectAll(
+                    ".nepal-district-path"
+                )
+                .each(
+                    function(d) {
+
+                        const rawName =
+                            getNepalDistrictName(d);
+
+
+                        const normName =
+                            normalizeNepalName(
+                                rawName
+                            );
+
+
+                        const searchMatch =
+                            !currentSearch ||
+                            normName.includes(
+                                currentSearch
+                            );
+
+
+                        const selection =
+                            d3.select(this);
+
+
+                        selection
+                            .classed(
+                                "dimmed",
+                                !searchMatch
+                            )
+                            .classed(
+                                "search-match",
+                                !!currentSearch &&
+                                searchMatch
+                            );
+
+                    }
+                );
+
+        }
+
+
+        /* =====================================================
+           DARK MODE
+           ===================================================== */
+
+        const nepalThemeButton =
+            document.getElementById(
+                "nepal-theme-btn"
+            );
+
+
+        const nepalPage =
+            document.getElementById(
+                "nepal-page"
+            );
+
+
+        const savedNepalTheme =
+            localStorage.getItem(
+                "nepalJourneyTheme"
+            );
+
+
+        if (
+            savedNepalTheme === "dark"
+        ) {
+
+            nepalPage.classList.add(
+                "dark"
+            );
+
+            nepalThemeButton.textContent =
+                "☀️";
+
+        }
+
+
+        nepalThemeButton.addEventListener(
+            "click",
+            () => {
+
+                nepalPage.classList.toggle(
+                    "dark"
+                );
+
+
+                const dark =
+                    nepalPage.classList.contains(
+                        "dark"
+                    );
+
+
+                nepalThemeButton.textContent =
+                    dark
+                        ? "☀️"
+                        : "🌙";
+
+
+                localStorage.setItem(
+                    "nepalJourneyTheme",
+                    dark
+                        ? "dark"
+                        : "light"
+                );
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
